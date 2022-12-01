@@ -42,11 +42,17 @@ function generateBombsPosition(nBombs, collectionLength){
  * 
  * @param {*} gameScoreDOM the DOM to display the score
  * @param {*} score get the score
+ * @param {*} gameOverlayDOM the DOM to display the message
+ * @param {*} message get the message : 'You Win' | 'You Lose'
  * @param {*} gameFieldDOM the parent of the cells; to get the cells to clone and replace
  */
-function gameOver(gameScoreDOM, score, gameFieldDOM){
-    //display score
+function gameOver(gameScoreDOM, score, gameOverlayDOM, message, gameFieldDOM){
+    //display score and message
     gameScoreDOM.innerHTML = score;
+    gameOverlayDOM.childNodes[1].innerHTML = message;
+    //display overlay
+    gameOverlayDOM.classList.replace('d-none', 'd-flex');
+
     //remove click event from cells
     for (let i = 0; i < gameFieldDOM.childNodes.length; i++) {
         //clone and replace all child to override their click event listener
@@ -64,11 +70,15 @@ function gameOver(gameScoreDOM, score, gameFieldDOM){
 function createGame(nCells, obj, difficulty){
     //get the score dom
     const gameScoreDOM = document.getElementById('score');
+    //get the message dom
+    const gameOverlayDOM = document.getElementById('overlay');
     //restart game
     obj.innerHTML = '';
     let score = 0;
+    let message = 'You Win';
     const point = 100;
     gameScoreDOM.innerHTML = score;
+    gameOverlayDOM.classList.replace('d-flex', 'd-none');
     
     //create and append the field
     const gameFieldDOM = createElement('div', 'd-flex flex-wrap m-auto game-field');
@@ -96,10 +106,13 @@ function createGame(nCells, obj, difficulty){
         //add a click event to listen once
         cell.addEventListener('click', function(){
             cell.classList.add(classReveal);
-            score += (classReveal === 'bomb') ? -point : point;
+            score += point;
             if(classReveal === 'bomb' || score === point * (nCells - difficulty)){
-                //you clicked a bomb, game over
-                gameOver(gameScoreDOM, score, gameFieldDOM);
+                //if bomb clicked
+                score -= (classReveal === 'bomb') ? point : 0;
+                message = (classReveal === 'bomb') ? 'You Lose' : message;
+                //end of the match
+                gameOver(gameScoreDOM, score, gameOverlayDOM, message, gameFieldDOM);
             }
         }, {once : true});
 
@@ -110,9 +123,10 @@ function createGame(nCells, obj, difficulty){
 
 //init
 const gameDOM= document.getElementById('game');
-const playBtn = document.getElementById('play-btn');
+const playhBtn = document.getElementById('play-btn');
+const diffSelect = document.getElementById('difficulty');
 
-//play click
-playBtn.addEventListener('click', function(){
-    createGame(100, gameDOM, 10);
+//match click
+playhBtn.addEventListener('click', function(){
+    createGame(100, gameDOM, parseInt(diffSelect.value) * 8);
 });
