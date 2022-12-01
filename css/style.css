@@ -19,7 +19,10 @@ main{
     border: 1px solid black;
 }
 .blue{
-    background-color: rgb(70, 70, 255);
+    background-color: #4646ff;
+}
+.bomb{
+    background-color: red;
 }
 
 @media screen and (max-width:564px){
