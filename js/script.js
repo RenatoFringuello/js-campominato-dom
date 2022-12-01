@@ -35,51 +35,80 @@ function generateBombsPosition(nBombs, collectionLength){
             bombPositons.push(randomIndex);
         }
     }
+    console.log(bombPositons);
     return bombPositons;
+}
+
+function gameOver(gameScoreDOM, score){
+    gameScoreDOM.innerHTML = score;
 }
 
 /**
  * 
  * @param {*} nCells number of cell to create, must be the pow of a number
- * @param {*} obj parent to create gamefield into
+ * @param {*} obj parent to create gameFieldDOM into
+ * @param {*} difficulty nBomb; must be smaller than nCells
  */
-function createGame(nCells, obj){
+function createGame(nCells, obj, difficulty){
+    //get the score dom
+    const gameScoreDOM = document.getElementById('score');
+    //restart game
     obj.innerHTML = '';
-    const gameField = createElement('div', 'd-flex flex-wrap m-auto game-field');
-    obj.append(gameField);
+    let score = 0;
+    const point = 100;
+    gameScoreDOM.innerHTML = score;
+    
+    //create and append the field
+    const gameFieldDOM = createElement('div', 'd-flex flex-wrap m-auto game-field');
+    obj.append(gameFieldDOM);
+    
+    //generate the bombs positons
+    const bombPositions = generateBombsPosition(difficulty, nCells);
 
-    const bombPositions = generateBombsPosition(16, nCells);
-
+    //create the cells
     for (let i = 0; i < nCells; i++) {
-        let classReveal = 'blue';//if is a bomb the class is 'bomb' otherwise is 'blue'
+        //if is a bomb the class is 'bomb' otherwise is 'blue'
+        let classReveal = 'blue';
+
+        //create the cell 
         const cell = createElement('div', 'd-flex text-center cell');
+        //append his number positon
         cell.append(createElement('span', 'm-auto', i + 1));
         
+        //if is a bomb give it a bomb class
         if(bombPositions.includes(i)){
             //there is a bomb at i position
             classReveal = 'bomb';
         }
 
+        //add a click event to listen once
         cell.addEventListener('click', function(){
             cell.classList.add(classReveal);
-            if(classReveal === 'bomb'){
-                alert('game over');
+            if(classReveal === 'bomb' || score === point * (nCells - difficulty - 1)){
+                //you clicked a bomb, game over
+                console.log(score);
+                gameOver(gameScoreDOM, score);
             }
-        },{once : true});
+            else{
+                score += point;
+                console.log(score);
+            }
+        }, {once : true});
 
-        gameField.append(cell);
+        //append to the field
+        gameFieldDOM.append(cell);
     }
 }
 
 
 
 //init
-const game = document.getElementById('game');
+const gameDOM= document.getElementById('game');
 const playBtn = document.getElementById('play-btn');
 
 //play click
 playBtn.addEventListener('click', function(){
-    createGame(100, game);
+    createGame(100, gameDOM, 16);
 });
 
 
