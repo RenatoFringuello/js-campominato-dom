@@ -15,11 +15,11 @@ function createElement(tagName, className = '', content = ''){
 /**
  * 
  * @param {*} min min range is inclusive
- * @param {*} max max range is inclusive
- * @returns random number between min and max 
+ * @param {*} max max range is exclusive
+ * @returns random number between min and max -1
  */
-function getRandomInclusive(min = 0, max){
-    return Math.floor(Math.random() * (max - min + 1) + min);;
+function getRandom(min = 0, max){
+    return Math.floor(Math.random() * (max - min) + min);;
 }
 
 /**
@@ -30,7 +30,7 @@ function getRandomInclusive(min = 0, max){
 function generateBombsPosition(nBombs, collectionLength){
     const bombPositons = [];
     while(bombPositons.length < nBombs){
-        let randomIndex = getRandomInclusive(0, collectionLength);
+        let randomIndex = getRandom(0, collectionLength);
         if(!bombPositons.includes(randomIndex)){
             bombPositons.push(randomIndex);
         }
@@ -96,12 +96,10 @@ function createGame(nCells, obj, difficulty){
         //add a click event to listen once
         cell.addEventListener('click', function(){
             cell.classList.add(classReveal);
-            if(classReveal === 'bomb' || score === point * (nCells - difficulty - 1)){
+            score += (classReveal === 'bomb') ? -point : point;
+            if(classReveal === 'bomb' || score === point * (nCells - difficulty)){
                 //you clicked a bomb, game over
                 gameOver(gameScoreDOM, score, gameFieldDOM);
-            }
-            else{
-                score += point;
             }
         }, {once : true});
 
@@ -110,15 +108,11 @@ function createGame(nCells, obj, difficulty){
     }
 }
 
-
-
 //init
 const gameDOM= document.getElementById('game');
 const playBtn = document.getElementById('play-btn');
 
 //play click
 playBtn.addEventListener('click', function(){
-    createGame(100, gameDOM, 16);
+    createGame(100, gameDOM, 10);
 });
-
-
