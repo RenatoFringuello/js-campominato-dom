@@ -12,6 +12,10 @@ main > :first-child{
     background-color: #6bd9b4;
 }
 
+#overlay{
+    background-color: #000000a8;
+    z-index: 1;
+}
 .game-field{
     width: 550px;
     height: 550px;

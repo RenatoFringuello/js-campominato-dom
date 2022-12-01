@@ -18,7 +18,15 @@
             <img src="./img/Logo.png" alt="B">
             <h1 class="ms-2">Campo Minato</h1>
         </div>
-        <button class="px-5" id="play-btn">Play</button>
+        <div class="d-flex">
+            <select class="form-select px-5 me-3" name="difficulty" id="difficulty">
+                <option value="1">Very Easy</option>
+                <option value="2">Easy</option>
+                <option value="3">Medium</option>
+                <option value="4">Hard</option>
+            </select>
+            <button class="btn btn-success px-5" id="play-btn">Play</button>
+        </div>
     </header>
     
     <main class="d-flex flex-column">
@@ -27,13 +35,17 @@
                 <h3 class="py-3 m-0">SCORE : <span id="score"></span></h3>
             </div>
         </section>
-        <section class="d-flex user-select-none flex-grow-1" id="game">
-
+        <section class="user-select-none flex-grow-1 position-relative">
+            <div class="d-flex h-100" id="game"></div>
+            <!-- should be d-flex -->
+            <div class="d-none position-absolute h-100 w-100 top-0 text-white" id="overlay">
+                <h1 class="m-auto"></h1>
+            </div>
         </section>
     </main>
 
     <footer class="d-flex justify-content-between align-items-center px-3">
-        <span>Made with &hearts; by <a href="#">Boolean</a></span>
+        <span>Made with &hearts; by <a href="#">Boolean (Renato Fringuello - #81)</a></span>
     </footer>
 
     <script src="./js/script.js"></script>
