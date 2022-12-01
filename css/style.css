@@ -39,3 +39,13 @@ main > :first-child{
         height: 400px;
     }
 }
+
+@media screen and (max-width:639px){
+    header.main-header{
+        height: 160px;
+        justify-content: center !important;
+    }
+    main{
+        height: calc(100vh - 210px);
+    }
+}
