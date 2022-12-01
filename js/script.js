@@ -27,7 +27,7 @@ function getRandom(min = 0, max){
  * @param {*} nBombs number of bombs to generate
  * @param {*} nCells number of cells to randomly plant nBombs into
  */
-function generateBombsPosition(nBombs, collectionLength){
+function generateBombsPositions(nBombs, collectionLength){
     const bombPositons = [];
     while(bombPositons.length < nBombs){
         let randomIndex = getRandom(0, collectionLength);
@@ -38,6 +38,7 @@ function generateBombsPosition(nBombs, collectionLength){
     console.log(bombPositons);
     return bombPositons;
 }
+
 /**
  * 
  * @param {*} gameScoreDOM the DOM to display the score
@@ -52,13 +53,21 @@ function gameOver(gameScoreDOM, score, gameOverlayDOM, message, gameFieldDOM){
     gameOverlayDOM.childNodes[1].innerHTML = message;
     //display overlay
     gameOverlayDOM.classList.replace('d-none', 'd-flex');
+    
+    //remove click event from cells;
+    //can be cancelled, beacuse the overlay unable the user to click the cells
+    
+    // for (let i = 0; i < gameFieldDOM.childNodes.length; i++) {
+    //     //clone and replace all child to override their click event listener
+    //     const cellClone = gameFieldDOM.childNodes[i].cloneNode(true);
+    //     gameFieldDOM.replaceChild(cellClone, gameFieldDOM.childNodes[i]);
+    // }
+}
 
-    //remove click event from cells
-    for (let i = 0; i < gameFieldDOM.childNodes.length; i++) {
-        //clone and replace all child to override their click event listener
-        const cellClone = gameFieldDOM.childNodes[i].cloneNode(true);
-        gameFieldDOM.replaceChild(cellClone, gameFieldDOM.childNodes[i]);
-    }
+function getBombAround(cellPos, bombsPosition){
+    let nBombAround = 0;
+
+    return nBombAround;
 }
 
 /**
@@ -85,7 +94,7 @@ function createGame(nCells, obj, difficulty){
     obj.append(gameFieldDOM);
     
     //generate the bombs positons
-    const bombPositions = generateBombsPosition(difficulty, nCells);
+    const bombsPositions = generateBombsPositions(difficulty, nCells);
 
     //create the cells
     for (let i = 0; i < nCells; i++) {
@@ -98,7 +107,7 @@ function createGame(nCells, obj, difficulty){
         cell.append(createElement('span', 'm-auto', i + 1));
         
         //if is a bomb give it a bomb class
-        if(bombPositions.includes(i)){
+        if(bombsPositions.includes(i)){
             //there is a bomb at i position
             classReveal = 'bomb';
         }
