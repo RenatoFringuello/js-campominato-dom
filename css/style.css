@@ -1,0 +1,30 @@
+header{
+    height: 100px;
+}
+footer{
+    height: 50px;
+}
+main{
+    height: calc(100vh - 150px);
+    background-color: aquamarine;
+}
+
+.game-field{
+    width: 550px;
+    height: 550px;
+}
+.cell{
+    width: calc(100% / 10 - 1px);
+    height: calc(100% / 10 );
+    border: 1px solid black;
+}
+.blue{
+    background-color: rgb(70, 70, 255);
+}
+
+@media screen and (max-width:564px){
+    .game-field{
+        width: 400px;
+        height: 400px;
+    }
+}
