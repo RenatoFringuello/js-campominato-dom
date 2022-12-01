@@ -38,9 +38,21 @@ function generateBombsPosition(nBombs, collectionLength){
     console.log(bombPositons);
     return bombPositons;
 }
-
-function gameOver(gameScoreDOM, score){
+/**
+ * 
+ * @param {*} gameScoreDOM the DOM to display the score
+ * @param {*} score get the score
+ * @param {*} gameFieldDOM the parent of the cells; to get the cells to clone and replace
+ */
+function gameOver(gameScoreDOM, score, gameFieldDOM){
+    //display score
     gameScoreDOM.innerHTML = score;
+    //remove click event from cells
+    for (let i = 0; i < gameFieldDOM.childNodes.length; i++) {
+        //clone and replace all child to override their click event listener
+        const cellClone = gameFieldDOM.childNodes[i].cloneNode(true);
+        gameFieldDOM.replaceChild(cellClone, gameFieldDOM.childNodes[i]);
+    }
 }
 
 /**
@@ -86,12 +98,10 @@ function createGame(nCells, obj, difficulty){
             cell.classList.add(classReveal);
             if(classReveal === 'bomb' || score === point * (nCells - difficulty - 1)){
                 //you clicked a bomb, game over
-                console.log(score);
-                gameOver(gameScoreDOM, score);
+                gameOver(gameScoreDOM, score, gameFieldDOM);
             }
             else{
                 score += point;
-                console.log(score);
             }
         }, {once : true});
 
