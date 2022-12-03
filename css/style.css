@@ -22,7 +22,7 @@ main > :first-child{
     border: 1px solid black;
     cursor: crosshair;
 }
-.blue{
+.safe{
     background-color: #4646ff !important;
 }
 .bomb{
