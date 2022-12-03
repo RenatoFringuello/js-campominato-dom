@@ -40,20 +40,21 @@ function generateBombsPositions(nBombs, collectionLength){
 
 /**
  * 
- * @param {*} gameScoreDOM the DOM to display the score
- * @param {*} score get the score
  * @param {*} gameOverlayDOM the DOM to display the message
  * @param {*} message get the message : 'You Win' | 'You Lose'
  * @param {*} gameFieldDOM the parent of the cells; to get the cells to clone and replace
  */
-function gameOver(gameScoreDOM, score, gameOverlayDOM, message, gameFieldDOM){
-    //display score and message
-    gameScoreDOM.innerHTML = score;
+function gameOver(gameOverlayDOM, message, gameFieldDOM){
     gameOverlayDOM.childNodes[1].innerHTML = message;
     //display overlay
     gameOverlayDOM.classList.replace('d-none', 'd-flex');
     //show all bombs
-
+    for(let i = 0; i < gameFieldDOM.childNodes.length -1; i++){
+        gameFieldDOM.childNodes[i+1].classList.remove('d-none');
+        if(gameFieldDOM.childNodes[i+1].childNodes[1].innerHTML === ''){
+            gameFieldDOM.childNodes[i+1].classList.add('bomb');
+        }
+    } 
 }
 
 /**
@@ -132,12 +133,10 @@ function createGame(nCells, obj, difficulty){
     
     //create and append the field
     const gameFieldDOM = createElement('div', 'd-flex flex-wrap m-auto game-field');
-    
     obj.append(gameFieldDOM);
     
     //generate the bombs positons
     const bombsPositions = generateBombsPositions(difficulty, nCells);
-    console.log(bombsPositions);
 
     //create the cells
     for (let i = 0; i < nCells; i++) {
@@ -149,7 +148,7 @@ function createGame(nCells, obj, difficulty){
         cell.style.width = 'calc(100% / ' + Math.sqrt(nCells) + ')';
         cell.style.height = cell.style.width;
         //append his number positon
-        cell.append(createElement('span', 'm-auto ', getNBombAround(i, bombsPositions, Math.sqrt(nCells))));
+        cell.append(createElement('span', 'm-auto d-none', getNBombAround(i, bombsPositions, Math.sqrt(nCells))));
         
         //if is a bomb give it a bomb class
         if(bombsPositions.includes(i)){
@@ -162,7 +161,7 @@ function createGame(nCells, obj, difficulty){
             if(!isGameOver){
                 if(e.button === 0 && e.altKey === false){
                     this.classList.add(classReveal);
-                    this.childNodes[1].classList.replace('d-none', 'd-inline');
+                    this.childNodes[1].classList.remove('d-none');
     
                     scoreN += point;
                     if(classReveal === 'bomb' || scoreN === point * (nCells - difficulty)){
@@ -171,8 +170,10 @@ function createGame(nCells, obj, difficulty){
                         message = (classReveal === 'bomb') ? 'You Lose' : message;
                         isGameOver = true;
                         //end of the match
-                        gameOver(gameScoreDOM, scoreN, gameOverlayDOM, message, gameFieldDOM);
+                        gameOver(gameOverlayDOM, message, gameFieldDOM);
                     }
+                    //display score and message
+                    gameScoreDOM.innerHTML = scoreN;
                     this.removeEventListener('click', handler);
                 }
                 else {
