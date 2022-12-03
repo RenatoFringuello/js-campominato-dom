@@ -50,7 +50,7 @@ function gameOver(gameOverlayDOM, message, gameFieldDOM){
     gameOverlayDOM.classList.replace('d-none', 'd-flex');
     //show all bombs
     for(let i = 0; i < gameFieldDOM.childNodes.length -1; i++){
-        gameFieldDOM.childNodes[i+1].classList.remove('d-none');
+        gameFieldDOM.childNodes[i+1].childNodes[1].classList.remove('d-none');
         if(gameFieldDOM.childNodes[i+1].childNodes[1].innerHTML === ''){
             gameFieldDOM.childNodes[i+1].classList.add('bomb');
         }
@@ -114,16 +114,16 @@ function getNBombAround(cellPos, bombsPosition, nCellsPerRow){
 /**
  * 
  * @param {*} nCells number of cell to create, must be the pow of a number
- * @param {*} obj parent to create gameFieldDOM into
  * @param {*} difficulty nBomb; must be smaller than nCells
  */
-function createGame(nCells, obj, difficulty){
+function createGame(nCells, difficulty){
+    const gameDOM= document.getElementById('game');
     //get the score dom
     const gameScoreDOM = document.getElementById('score');
     //get the message dom
     const gameOverlayDOM = document.getElementById('overlay');
     //restart game
-    obj.innerHTML = '';
+    gameDOM.innerHTML = '';
     let scoreN = 0;
     let message = 'You Win';
     let isGameOver = false;
@@ -133,7 +133,7 @@ function createGame(nCells, obj, difficulty){
     
     //create and append the field
     const gameFieldDOM = createElement('div', 'd-flex flex-wrap m-auto game-field');
-    obj.append(gameFieldDOM);
+    gameDOM.append(gameFieldDOM);
     
     //generate the bombs positons
     const bombsPositions = generateBombsPositions(difficulty, nCells);
@@ -141,12 +141,11 @@ function createGame(nCells, obj, difficulty){
     //create the cells
     for (let i = 0; i < nCells; i++) {
         //if is a bomb the class is 'bomb' otherwise is 'blue'
-        let classReveal = 'blue';
+        let classReveal = 'safe';
 
         //create the cell 
         const cell = createElement('div', 'd-flex text-center cell');
-        cell.style.width = 'calc(100% / ' + Math.sqrt(nCells) + ')';
-        cell.style.height = cell.style.width;
+        cell.style.width = cell.style.height = 'calc(100% / ' + Math.sqrt(nCells) + ')';
         //append his number positon
         cell.append(createElement('span', 'm-auto d-none', getNBombAround(i, bombsPositions, Math.sqrt(nCells))));
         
@@ -160,21 +159,29 @@ function createGame(nCells, obj, difficulty){
         cell.addEventListener('click', function handler(e){
             if(!isGameOver){
                 if(e.button === 0 && e.altKey === false){
-                    this.classList.add(classReveal);
-                    this.childNodes[1].classList.remove('d-none');
-    
-                    scoreN += point;
-                    if(classReveal === 'bomb' || scoreN === point * (nCells - difficulty)){
-                        //if bomb clicked
-                        scoreN -= (classReveal === 'bomb') ? point : 0;
-                        message = (classReveal === 'bomb') ? 'You Lose' : message;
-                        isGameOver = true;
-                        //end of the match
-                        gameOver(gameOverlayDOM, message, gameFieldDOM);
+                    //click senza alt
+                    if(this.classList[this.classList.length-1] !== 'flag'){
+                        //se non è un flag
+
+                        //reveal cell
+                        this.classList.add(classReveal);
+                        this.childNodes[1].classList.remove('d-none');
+                        //get point
+                        scoreN += point;
+                        
+                        if(classReveal === 'bomb' || scoreN === point * (nCells - difficulty)){
+                            //if bomb clicked or if win
+                            //if loose
+                            scoreN -= (classReveal === 'bomb') ? point : 0;
+                            message = (classReveal === 'bomb') ? 'You Lose' : message;
+                            //end of the match
+                            isGameOver = true;
+                            gameOver(gameOverlayDOM, message, gameFieldDOM);
+                        }
+                        //display score and message
+                        gameScoreDOM.innerHTML = scoreN;
+                        this.removeEventListener('click', handler);
                     }
-                    //display score and message
-                    gameScoreDOM.innerHTML = scoreN;
-                    this.removeEventListener('click', handler);
                 }
                 else {
                     //se clicchi tenendo premuto pure alt o option
@@ -189,7 +196,6 @@ function createGame(nCells, obj, difficulty){
 }
 
 //init
-const gameDOM= document.getElementById('game');
 const playhBtn = document.getElementById('play-btn');
 const numOfCellsDOM = document.getElementById('n-cells');
 const diffSelectDOM = document.getElementById('difficulty');
@@ -199,5 +205,5 @@ playhBtn.addEventListener('click', function(){
     //get the number of cells
     const numOfCells = Math.pow(parseInt(numOfCellsDOM.value, 10), 2);
 
-    createGame(numOfCells, gameDOM, Math.floor((parseInt(diffSelectDOM.value, 10) / 10) * numOfCells));
+    createGame(numOfCells, Math.floor((parseInt(diffSelectDOM.value, 10) / 10) * numOfCells));
 });
