@@ -201,14 +201,15 @@ const numOfCellsDOM = document.getElementById('n-cells');
 const diffSelectDOM = document.getElementById('difficulty');
 //get the flag mode dom
 const gameFlagModeDOM = document.getElementById('flag-mode');
-let isFlagMode = false;
-gameFlagModeDOM.innerHTML = 'off';
+let isFlagMode ;
 
 //play click
 playBtn.addEventListener('click', function(){
     //get the number of cells
     const numOfCells = Math.pow(parseInt(numOfCellsDOM.value, 10), 2);
     isFlagMode = false;
+    gameFlagModeDOM.innerHTML = 'off';
+    gameFlagModeDOM.classList.remove('on');
     createGame(numOfCells, Math.floor((parseInt(diffSelectDOM.value, 10) / 10) * numOfCells));
 });
 
@@ -219,6 +220,8 @@ document.addEventListener('keydown', function(e){
             //get the number of cells
             const numOfCells = Math.pow(parseInt(numOfCellsDOM.value, 10), 2);
             isFlagMode = false;
+            gameFlagModeDOM.innerHTML = 'off';
+            gameFlagModeDOM.classList.remove('on');
             createGame(numOfCells, Math.floor((parseInt(diffSelectDOM.value, 10) / 10) * numOfCells));
             break;
         case 'KeyF':
