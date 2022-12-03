@@ -32,6 +32,13 @@ main > :first-child{
     background-color: orange;
 }
 
+.on{
+    color:darkgreen !important;
+}
+#flag-mode{
+    color: #a70000;
+}
+
 @media screen and (max-width:564px){
     .game-field{
         width: 400px;

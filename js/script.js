@@ -158,10 +158,10 @@ function createGame(nCells, difficulty){
         //add a click event to listen once
         cell.addEventListener('click', function handler(e){
             if(!isGameOver){
-                if(e.button === 0 && e.altKey === false){
-                    //click senza alt
+                if(!isFlagMode){
+                    //click senza flag mode
                     if(this.classList[this.classList.length-1] !== 'flag'){
-                        //se non è un flag
+                        //se la cella non è un flag
 
                         //reveal cell
                         this.classList.add(classReveal);
@@ -184,7 +184,7 @@ function createGame(nCells, difficulty){
                     }
                 }
                 else {
-                    //se clicchi tenendo premuto pure alt o option
+                    //se clicchi in FlagMode
                     this.classList.toggle('flag');
                 }
             }
@@ -196,14 +196,40 @@ function createGame(nCells, difficulty){
 }
 
 //init
-const playhBtn = document.getElementById('play-btn');
+const playBtn = document.getElementById('play-btn');
 const numOfCellsDOM = document.getElementById('n-cells');
 const diffSelectDOM = document.getElementById('difficulty');
+//get the flag mode dom
+const gameFlagModeDOM = document.getElementById('flag-mode');
+let isFlagMode = false;
+gameFlagModeDOM.innerHTML = 'off';
 
-//match click
-playhBtn.addEventListener('click', function(){
+//play click
+playBtn.addEventListener('click', function(){
     //get the number of cells
     const numOfCells = Math.pow(parseInt(numOfCellsDOM.value, 10), 2);
-
+    isFlagMode = false;
     createGame(numOfCells, Math.floor((parseInt(diffSelectDOM.value, 10) / 10) * numOfCells));
+});
+
+//keydown
+document.addEventListener('keydown', function(e){
+    switch (e.code) {
+        case 'KeyR':
+            //get the number of cells
+            const numOfCells = Math.pow(parseInt(numOfCellsDOM.value, 10), 2);
+            isFlagMode = false;
+            createGame(numOfCells, Math.floor((parseInt(diffSelectDOM.value, 10) / 10) * numOfCells));
+            break;
+        case 'KeyF':
+            //toggle sul FlagMode
+            isFlagMode = !isFlagMode;
+            //get the flag mode dom
+            gameFlagModeDOM.innerHTML = (isFlagMode)? 'on' : 'off';
+            gameFlagModeDOM.classList.toggle('on');
+            break;
+    
+        default:
+            break;
+    }
 });
